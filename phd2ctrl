@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require 'socket'
+
+MESSAGES = {
+  pause: 1,
+  resume: 2,
+  move1: 3,
+  move2: 4,
+  move3: 5,
+  image: 6,
+  guide: 7,
+  camconnect: 8,
+  camdisconnect: 9,
+  reqdist: 10,
+  reqframe: 11,
+  move4: 12,
+  move5: 13,
+  autofindstar: 14,
+  setlockposition: 15,
+  flipracal: 16,
+  getstatus: 17,
+  stop: 18,
+  loop: 19,
+  startguiding: 20,
+  loopframecount: 21,
+  clearcal: 22,
+  flip_sim_camera: 23,
+  deselect: 24
+}
+
+if ARGV.count == 0 || ARGV[0].downcase == 'help'
+  puts "Usage: ./phd2ctrl <message>"
+  puts ""
+  puts "Valid messages: #{MESSAGES.keys.sort.join(', ')}"
+  puts ""
+  puts "Output: single byte response from PHD2"
+  exit 0 if ARGV.count > 0 && ARGV[0].downcase == 'help'
+  exit 1
+end
+
+
+s = TCPSocket.open 'localhost', 4300
+
+s.write [MESSAGES[ARGV[0].to_sym]].pack('C')
+puts s.read(1).unpack('C')
+
+s.close
