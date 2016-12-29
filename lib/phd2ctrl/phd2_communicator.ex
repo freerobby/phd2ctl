@@ -39,12 +39,8 @@ defmodule Phd2ctrl.Phd2Communicator do
   end
 
   def execute_command(command) do
-    command_value = @phd2_messages[String.to_atom(command)]
-
     sock = Socket.TCP.connect! @host, @port, packet: :raw
-
-    Socket.Stream.send! sock, <<command_value>>
-
+    Socket.Stream.send! sock, <<@phd2_messages[String.to_atom(command)]>>
     <<response>> = Socket.Stream.recv! sock, 1
 
     {:ok, response}
